@@ -3,6 +3,10 @@
 #include<string.h>
 #include "Usuario.h"
 
+//
+// Memory functions
+//
+
 void initVector(UserVector* array) {
     array->users    = malloc(10 * sizeof(User));
 
@@ -32,10 +36,9 @@ void resizeVector(UserVector* array) {
     array->capacity = newCapacity;
 }
 
-void clearBuffer(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
+//
+// Utils
+// 
 
 void printVector(UserVector* array) {
     if (array->size == 0) {
@@ -43,7 +46,7 @@ void printVector(UserVector* array) {
       return;
     }
   
-    printf("\nLista de pessoas no banco de dados: \n");
+    printf("Lista de pessoas no banco de dados: \n");
     for (int index = 0; index < array->size; index++) {
         printf(
             "ID: %d, Nome: %s, Idade: %d, Saldo Atual: %.2f\n", 
@@ -65,7 +68,11 @@ int contains(UserVector* array, int userId) {
     return -1;
 }
 
-void addNewUser(UserVector* array, int id, int age, char* name, float balance) {
+//
+// CRUD Functions
+//
+
+void insertUser(UserVector* array, int id, int age, char* name, float balance) {
     if (array->size >= array->capacity) resizeVector(array);
   
     // foo->bar == (*foo).bar;
@@ -76,35 +83,6 @@ void addNewUser(UserVector* array, int id, int age, char* name, float balance) {
     array->users[array->size].balance = balance;
   
     array->size++;
-  }
-
-void insertUser(UserVector* Usuarios, int n) {
-    for (int i = 0; i < n; i++) {
-      char nome[100];
-      int idade;
-      float saldoAtual;
-  
-      printf("\nDigite o nome do usuário: ");
-      scanf(" %[^\n]", nome);
-  
-      nome[strcspn(nome, "\n")] = '\0';
-  
-      printf("Digite a idade: ");
-      scanf("%d", &idade);
-  
-      clearBuffer();
-  
-      printf("Digite o saldo atual: ");
-      scanf("%f", &saldoAtual);
-  
-      clearBuffer();
-  
-      if (saldoAtual <= 0) {
-        printf("Não é possível inserir um saldo negativo\n");
-        exit(1);
-      }
-      addNewUser(Usuarios, Usuarios->size + 1, idade, nome, saldoAtual);
-    }
   }
 
 void deleteUser(UserVector* array, int userId) {
@@ -120,37 +98,43 @@ void deleteUser(UserVector* array, int userId) {
     array->size--;
 }
 
-void transferBalance(UserVector* Usuarios, int id1, int id2, float valor) {
+void transferBalance(UserVector* array, int id1, int id2, float value) {
     if (id1 == id2) {
-      printf("Os ID's devem ser diferentes");
-      return;
+        printf("Os ID's devem ser diferentes");
+        return;
     }
-    if (valor <= 0) {
-      printf("O valor a ser transferido deve ser positivo: ");
-      return;
+    int found1 = contains(array, id1), found2 = contains(array, id2);
+    if (found1 == -1 || found2 == -1) {
+        printf("Usuario(s) nao encontrado(s), impossivel excluir.");
+        return;
+    }
+
+    if (value <= 0) {
+        printf("O valor a ser transferido deve ser positivo: ");
+        return;
     }
   
     User *remetente = NULL, *destinatario = NULL;
-    for (int i = 0; i < Usuarios->size; i++) {
-      if (Usuarios->users[i].id == id1) {
-        remetente = &Usuarios->users[i];
-      }
-      if (Usuarios->users[i].id == id2) {
-        destinatario = &Usuarios->users[i];
-      }
+    for (int i = 0; i < array->size; i++) {
+        if (array->users[i].id == id1) {
+            remetente = &array->users[i];
+        }
+        if (array->users[i].id == id2) {
+            destinatario = &array->users[i];
+        }
     }
     if (remetente == NULL || destinatario == NULL) {
-      printf("ID's inválidos\n");
-      return;
+        printf("ID's inválidos\n");
+        return;
     }
   
-    if (remetente->balance < valor) {
-      printf("Saldo insuficiente para transferência");
-      return;
+    if (remetente->balance < value) {
+        printf("Saldo insuficiente para transferência");
+        return;
     }
   
-    remetente->balance -= valor;
-    destinatario->balance += valor;
+    remetente->balance -= value;
+    destinatario->balance += value;
   
-    printf("Transferência de %.2f realizada com sucesso\n\n", valor);
+    printf("Transferência de %.2f realizada com sucesso\n\n", value);
   }

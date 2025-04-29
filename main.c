@@ -3,66 +3,145 @@
 #include <string.h>
 #include "Usuario.h"
 
-// arrow function >
-// (pointer_name) -> (variable_name);
-// foo->bar == (*foo).bar;
+enum Options {
+    PRINT_VECTOR,
+    ADD_NEW_USER,
+    TRANSFERENCE,
+    DELETE_USER,
+    CLOSE_PROGRAM
+};
 
-/* To do
-        organizar melhor usando header;
-        assert em funcoes que aceitam ponteiro como vectorInit pra checar se um
-   ponteiro não é NULL; assert vector capacity >= size; manter found = -1 se no
-   final do for não ter encontrado o ID;
+/*  TODO
+    assert em funcoes que aceitam ponteiro como vectorInit pra checar se um
+    ponteiro não é NULL; assert vector capacity >= size; manter found = -1 se no
+    final do for não ter encontrado o ID;
 */
 
-int main() {
-  UserVector Usuarios;
-  initVector(&Usuarios);
+void clearConsole() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
 
-  while (1) {
-    printf("Insira uma opção: \n");
-    printf(
-        "[0] Listar usuários, [1] Inserir novos usuários, [2] Transferência de "
-        "Saldo, [3] Excluir um usuário ou [4] para fechar o programa\n");
+void awaitResponse() {
+    printf("\n\nPressione ENTER para continuar...");
+    getchar();
+}
 
-    int option;
-    scanf("%d", &option);
-    clearBuffer();
+void clearBuffer(void) {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
-    if (option == 0) {
-      printVector(&Usuarios);
-    } else if (option == 1) {
-      int n;
-      printf("Insira quantos usuários quer inserir no DB: \n");
-      scanf("%d", &n);
-      insertUser(&Usuarios, n);
-      printVector(&Usuarios);
-    } else if (option == 2) {
-      int id1, id2;
-      printf("Insira o primeiro ID: \n");
-      scanf("%d", &id1);
-      printf("Insira o segundo ID: \n");
-      scanf("%d", &id2);
+void addNewUser(UserVector* array) {
+    int numberOfUsers;
+    printf("Insira quantos usuários gostaria de inserir: ");
+    scanf("%d", &numberOfUsers);
 
-      float valor;
-      printf("Insira o valor a ser transferido: \n");
-      scanf("%f", &valor);
+    char name[100];
+    int age;
+    float balance;
+    for (int i = 0; i < numberOfUsers; i++) {
+        memset(name, '\0', sizeof(name));
 
-      transferBalance(&Usuarios, id1, id2, valor);
-    } else if (option == 3) {
-      int id1;
-      printf("Insira o ID que deseja remover:\n");
-      scanf("%d", &id1);
+        printf("\nDigite o nome do usuário: ");
+        scanf(" %[^\n]", name);
+    
+        name[strcspn(name, "\n")] = '\0';
+    
+        printf("Digite a idade: ");
+        scanf("%d", &age);
+    
+        clearBuffer();
+    
+        printf("Digite o saldo atual: ");
+        scanf("%f", &balance);
+    
+        clearBuffer();
+    
+        if (balance <= 0) {
+            printf("Nao é possivel inserir um saldo negativo!\n");
+            awaitResponse();
+            return;
+        }
 
-      deleteUser(&Usuarios, id1);
-      printf("Usuário removido\n");
-    } else if (option == 4) {
-      clearVectorMem(&Usuarios);
-      printf("Fechando programa...\n");
-      break;
-    } else {
-      printf("Opção inválida, tente novamente!\n");
+        insertUser(array, array->size + 1, age, name, balance);
     }
-  }
+}
 
-  return 0;
+void makeTransference(UserVector* array) {
+    int id1, id2;
+    printf("Insira o primeiro ID: ");
+    scanf("%d", &id1);
+    printf("Insira o segundo ID: ");
+    scanf("%d", &id2);
+
+    float value;
+    printf("Insira o valor a ser transferido: ");
+    scanf("%f", &value);
+
+    transferBalance(array, id1, id2, value);
+}
+
+int main() {
+    UserVector Users;
+    initVector(&Users);
+
+    while (1) {
+        printf("Insira uma opção: \n");
+        printf(
+            "[0] Listar usuários\n[1] Inserir novos usuários\n[2] Transferência de "
+            "Saldo\n[3] Excluir um usuário\n[4] para fechar o programa\n");
+
+        int option;
+        scanf("%d", &option);
+        clearBuffer();
+
+        clearConsole();
+
+        switch (option) {
+            case PRINT_VECTOR:
+                printVector(&Users);
+                awaitResponse();
+                break;
+
+            case ADD_NEW_USER:
+                addNewUser(&Users);
+                break;
+
+            case TRANSFERENCE:
+                makeTransference(&Users);
+                awaitResponse();
+                break;
+
+            case DELETE_USER:
+                int id;
+                printf("Insira o ID que deseja remover: ");
+                scanf("%d", &id);
+
+                deleteUser(&Users, id);
+
+                printf("Usuario Removido!");
+                awaitResponse();
+                break;
+
+            case CLOSE_PROGRAM:
+                clearVectorMem(&Users);
+
+                printf("Fechando programa...");
+                awaitResponse();
+                exit(0);
+
+            default:
+                printf("Comando Invalido!");
+                awaitResponse();
+                break;
+        }
+
+        clearConsole();
+    }
+
+    return 0;
 }

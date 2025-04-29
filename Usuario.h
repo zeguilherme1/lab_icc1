@@ -1,7 +1,7 @@
 #ifndef USUARIO_H
 #define USUARIO_H
 
-typedef struct {
+typedef struct User {
     int id, age;
     char name[100];
     float balance;
@@ -33,7 +33,7 @@ void printVector(UserVector* array);
 @note Uses the resizeVector() if there is no memory available.
 
 */
-void insertUser(UserVector* users, int numberOfUsers);
+void insertUser(UserVector* array, int id, int age, char* name, float balance);
 
 // Removes a user from the vector
 void deleteUser(UserVector* array, int userId);
