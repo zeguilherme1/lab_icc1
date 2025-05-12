@@ -47,4 +47,6 @@ void deleteUser(UserVector* array, int userId);
 */
 void transferBalance(UserVector* users, int idSender, int idReceiver, float value);
 
+void exportUsers(const char* file, UserVector* array);
+
 #endif

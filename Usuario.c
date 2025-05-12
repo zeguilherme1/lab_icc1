@@ -138,3 +138,18 @@ void transferBalance(UserVector* array, int id1, int id2, float value) {
   
     printf("Transferência de %.2f realizada com sucesso\n\n", value);
   }
+
+
+void exportUsers(const char* file, UserVector* array){
+	FILE* fp = fopen(file, "w+");
+	if(!fp){
+		perror("Error trying to write in file");
+		return;
+	}
+	for(int i = 0; i < array->size; i++){
+		User u = array->users[i];
+		fprintf(fp, "%d|%d|%s|%.2f\n", u.id, u.age, u.name, u.balance);
+	}
+	fclose(fp);
+}
+

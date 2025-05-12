@@ -8,14 +8,9 @@ enum Options {
     ADD_NEW_USER,
     TRANSFERENCE,
     DELETE_USER,
-    CLOSE_PROGRAM
+    CLOSE_PROGRAM,
+    EXPORT_USERS
 };
-
-/*  TODO
-    assert em funcoes que aceitam ponteiro como vectorInit pra checar se um
-    ponteiro não é NULL; assert vector capacity >= size; manter found = -1 se no
-    final do for não ter encontrado o ID;
-*/
 
 void clearConsole() {
     #ifdef _WIN32
@@ -93,7 +88,7 @@ int main() {
         printf("Insira uma opção: \n");
         printf(
             "[0] Listar usuários\n[1] Inserir novos usuários\n[2] Transferência de "
-            "Saldo\n[3] Excluir um usuário\n[4] para fechar o programa\n");
+            "Saldo\n[3] Excluir um usuário\n[4] para fechar o programa\n[5] para exportar usuários: \n > ");
 
         int option;
         scanf("%d", &option);
@@ -133,8 +128,16 @@ int main() {
                 printf("Fechando programa...");
                 awaitResponse();
                 exit(0);
+	    case EXPORT_USERS:
+		char file[100];
+		printf("Digite o nome do arquivo (sem .txt): ");
+		scanf("%s", file);
+		strcat(file, ".txt");
 
-            default:
+		printf("Exportando usuários...");
+		exportUsers(file, &Users);
+            	
+	    default:
                 printf("Comando Invalido!");
                 awaitResponse();
                 break;
