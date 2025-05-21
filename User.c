@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include "Usuario.h"
+#include "User.h"
 
 //
 // Memory functions
@@ -40,24 +40,6 @@ void resizeVector(UserVector* array) {
 // Utils
 // 
 
-void printVector(UserVector* array) {
-    if (array->size == 0) {
-      printf("O Banco de dados está vazio \n");
-      return;
-    }
-  
-    printf("Lista de pessoas no banco de dados: \n");
-    for (int index = 0; index < array->size; index++) {
-        printf(
-            "ID: %d, Nome: %s, Idade: %d, Saldo Atual: %.2f\n", 
-            array->users[index].id,
-            array->users[index].name, 
-            array->users[index].age, 
-            array->users[index].balance
-        );
-    }
-}
-
 int contains(UserVector* array, int userId) {
     for (int index = 0; index < array->size; index++) {
       if (array->users[index].id == userId) {
@@ -83,7 +65,7 @@ void insertUser(UserVector* array, int id, int age, char* name, float balance) {
     array->users[array->size].balance = balance;
   
     array->size++;
-  }
+}
 
 void deleteUser(UserVector* array, int userId) {
     int found = contains(array, userId);
@@ -137,10 +119,9 @@ void transferBalance(UserVector* array, int id1, int id2, float value) {
     destinatario->balance += value;
   
     printf("Transferência de %.2f realizada com sucesso\n\n", value);
-  }
+}
 
-
-void exportUsers(const char* file, UserVector* array){
+void exportUsers(const char* file, UserVector* array) {
 	FILE* fp = fopen(file, "w+");
 	if(!fp){
 		perror("Error trying to write in file");
@@ -152,4 +133,3 @@ void exportUsers(const char* file, UserVector* array){
 	}
 	fclose(fp);
 }
-

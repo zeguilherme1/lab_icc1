@@ -25,9 +25,6 @@ void resizeVector(UserVector* array);
 // Free the memory block that is being used by the vector.
 void clearVectorMem(UserVector* array);
 
-// Prints a list of all users in the console
-void printVector(UserVector* array);
-
 /* 
 @brief Insert a new user to the vector.
 @note Uses the resizeVector() if there is no memory available.

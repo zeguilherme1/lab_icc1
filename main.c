@@ -1,84 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Usuario.h"
+#include "User.h"
+#include "UserActions.h"
+#include "Utils.h"
 
 enum Options {
     PRINT_VECTOR,
     ADD_NEW_USER,
     TRANSFERENCE,
     DELETE_USER,
-    CLOSE_PROGRAM,
-    EXPORT_USERS
+    EXPORT_USERS,
+    CLOSE_PROGRAM
 };
-
-void clearConsole() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-}
-
-void awaitResponse() {
-    printf("\n\nPressione ENTER para continuar...");
-    getchar();
-}
-
-void clearBuffer(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-
-void addNewUser(UserVector* array) {
-    int numberOfUsers;
-    printf("Insira quantos usuários gostaria de inserir: ");
-    scanf("%d", &numberOfUsers);
-
-    char name[100];
-    int age;
-    float balance;
-    for (int i = 0; i < numberOfUsers; i++) {
-        memset(name, '\0', sizeof(name));
-
-        printf("\nDigite o nome do usuário: ");
-        scanf(" %[^\n]", name);
-    
-        name[strcspn(name, "\n")] = '\0';
-    
-        printf("Digite a idade: ");
-        scanf("%d", &age);
-    
-        clearBuffer();
-    
-        printf("Digite o saldo atual: ");
-        scanf("%f", &balance);
-    
-        clearBuffer();
-    
-        if (balance <= 0) {
-            printf("Nao é possivel inserir um saldo negativo!\n");
-            awaitResponse();
-            return;
-        }
-
-        insertUser(array, array->size + 1, age, name, balance);
-    }
-}
-
-void makeTransference(UserVector* array) {
-    int id1, id2;
-    printf("Insira o primeiro ID: ");
-    scanf("%d", &id1);
-    printf("Insira o segundo ID: ");
-    scanf("%d", &id2);
-
-    float value;
-    printf("Insira o valor a ser transferido: ");
-    scanf("%f", &value);
-
-    transferBalance(array, id1, id2, value);
-}
 
 int main() {
     UserVector Users;
@@ -88,7 +22,7 @@ int main() {
         printf("Insira uma opção: \n");
         printf(
             "[0] Listar usuários\n[1] Inserir novos usuários\n[2] Transferência de "
-            "Saldo\n[3] Excluir um usuário\n[4] para fechar o programa\n[5] para exportar usuários: \n > ");
+            "Saldo\n[3] Excluir um usuário\n[4] Exportar usuários\n[5] Fechar o programa\n> ");
 
         int option;
         scanf("%d", &option);
@@ -112,30 +46,21 @@ int main() {
                 break;
 
             case DELETE_USER:
-                int id;
-                printf("Insira o ID que deseja remover: ");
-                scanf("%d", &id);
+                removeUser(&Users);
+                awaitResponse();
+                break;
 
-                deleteUser(&Users, id);
-
-                printf("Usuario Removido!");
+            case EXPORT_USERS:
+                exportUsersToTxt(&Users);
                 awaitResponse();
                 break;
 
             case CLOSE_PROGRAM:
                 clearVectorMem(&Users);
-
                 printf("Fechando programa...");
                 awaitResponse();
                 exit(0);
-	    case EXPORT_USERS:
-		char file[100];
-		printf("Digite o nome do arquivo (sem .txt): ");
-		scanf("%s", file);
-		strcat(file, ".txt");
-
-		printf("Exportando usuários...");
-		exportUsers(file, &Users);
+                break;
             	
 	    default:
                 printf("Comando Invalido!");
