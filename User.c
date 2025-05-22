@@ -127,6 +127,7 @@ void exportUsers(const char* file, UserVector* array) {
 		perror("Error trying to write in file");
 		return;
 	}
+	fprintf(fp, "id|idade|nome|saldo\n");
 	for(int i = 0; i < array->size; i++){
 		User u = array->users[i];
 		fprintf(fp, "%d|%d|%s|%.2f\n", u.id, u.age, u.name, u.balance);
