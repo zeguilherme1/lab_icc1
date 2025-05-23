@@ -19,8 +19,8 @@ void initVector(UserVector* array) {
     array->capacity = 10;
 }
 
-void clearVectorMem(UserVector* array) { 
-    free(array->users); 
+void clearVectorMem(UserVector* array) {
+    free(array->users);
 }
 
 void resizeVector(UserVector* array) {
@@ -38,7 +38,7 @@ void resizeVector(UserVector* array) {
 
 //
 // Utils
-// 
+//
 
 int contains(UserVector* array, int userId) {
     for (int index = 0; index < array->size; index++) {
@@ -56,14 +56,14 @@ int contains(UserVector* array, int userId) {
 
 void insertUser(UserVector* array, int id, int age, char* name, float balance) {
     if (array->size >= array->capacity) resizeVector(array);
-  
+
     // foo->bar == (*foo).bar;
     array->users[array->size].id = id;
     strncpy(array->users[array->size].name, name, sizeof(array->users[array->size].name) - 1);
     array->users[array->size].name[sizeof(array->users[array->size].name) - 1] = '\0';
     array->users[array->size].age = age;
     array->users[array->size].balance = balance;
-  
+
     array->size++;
 }
 
@@ -71,6 +71,7 @@ void deleteUser(UserVector* array, int userId) {
     int found = contains(array, userId);
     if (found == -1) {
         printf("Usuario nao encontrado, impossivel excluir.");
+        getchar();
         return;
     }
 
@@ -83,19 +84,22 @@ void deleteUser(UserVector* array, int userId) {
 void transferBalance(UserVector* array, int id1, int id2, float value) {
     if (id1 == id2) {
         printf("Os ID's devem ser diferentes");
+        getchar();
         return;
     }
     int found1 = contains(array, id1), found2 = contains(array, id2);
     if (found1 == -1 || found2 == -1) {
-        printf("Usuario(s) nao encontrado(s), impossivel excluir.");
+        printf("Usuario(s) nao encontrado(s), não é possível realizar a transferência.");
+        getchar();
         return;
     }
 
     if (value <= 0) {
         printf("O valor a ser transferido deve ser positivo: ");
+        getchar();
         return;
     }
-  
+
     User *remetente = NULL, *destinatario = NULL;
     for (int i = 0; i < array->size; i++) {
         if (array->users[i].id == id1) {
@@ -107,30 +111,33 @@ void transferBalance(UserVector* array, int id1, int id2, float value) {
     }
     if (remetente == NULL || destinatario == NULL) {
         printf("ID's inválidos\n");
+        getchar();
         return;
     }
-  
+
     if (remetente->balance < value) {
         printf("Saldo insuficiente para transferência");
+        getchar();
         return;
     }
-  
+
     remetente->balance -= value;
     destinatario->balance += value;
-  
+
     printf("Transferência de %.2f realizada com sucesso\n\n", value);
 }
 
 void exportUsers(const char* file, UserVector* array) {
-	FILE* fp = fopen(file, "w+");
-	if(!fp){
-		perror("Error trying to write in file");
-		return;
-	}
-	fprintf(fp, "id|idade|nome|saldo\n");
-	for(int i = 0; i < array->size; i++){
-		User u = array->users[i];
-		fprintf(fp, "%d|%d|%s|%.2f\n", u.id, u.age, u.name, u.balance);
-	}
-	fclose(fp);
+        FILE* fp = fopen(file, "w+");
+        if(!fp){
+                perror("Error trying to write in file");
+                getchar();
+                return;
+        }
+        fprintf(fp, "id|idade|nome|saldo\n");
+        for(int i = 0; i < array->size; i++){
+                User u = array->users[i];
+                fprintf(fp, "%d|%d|%s|%.2f\n", u.id, u.age, u.name, u.balance);
+        }
+        fclose(fp);
 }
