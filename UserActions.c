@@ -129,8 +129,6 @@ UserVector importUsers() {
             
             insertUser(&newUsers, id, age, name, balance);
         }
-
-        fclose(fp);
     }
 
     return newUsers;
