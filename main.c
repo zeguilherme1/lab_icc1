@@ -10,7 +10,6 @@ enum Options {
     ADD_NEW_USER,
     TRANSFERENCE,
     DELETE_USER,
-    EXPORT_USERS,
     CLOSE_PROGRAM
 };
 
@@ -22,7 +21,7 @@ int main() {
         printf("Insira uma opção: \n");
         printf(
             "[0] Listar usuários\n[1] Inserir novos usuários\n[2] Transferência de "
-            "Saldo\n[3] Excluir um usuário\n[4] Exportar usuários\n[5] Fechar o programa\n> ");
+            "Saldo\n[3] Excluir um usuário\n[4] Fechar o programa\n> ");
 
         int option;
         scanf("%d", &option);
@@ -51,12 +50,8 @@ int main() {
                 awaitResponse();
                 break;
 
-            case EXPORT_USERS:
-                exportUsersToTxt(&Users);
-                awaitResponse();
-                break;
-
             case CLOSE_PROGRAM:
+                exportUsersToTxt(&Users);
                 clearVectorMem(&Users);
                 printf("Fechando programa...");
                 awaitResponse();
