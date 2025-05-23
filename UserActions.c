@@ -17,19 +17,19 @@ void addNewUser(UserVector* array) {
 
         printf("\nDigite o nome do usuário: ");
         scanf(" %[^\n]", name);
-    
+
         name[strcspn(name, "\n")] = '\0';
-    
+
         printf("Digite a idade: ");
         scanf("%d", &age);
-    
+
         clearBuffer();
-    
+
         printf("Digite o saldo atual: ");
         scanf("%f", &balance);
-    
+
         clearBuffer();
-    
+
         if (balance <= 0) {
             printf("Nao é possivel inserir um saldo negativo!\n");
             awaitResponse();
@@ -47,7 +47,7 @@ void removeUser(UserVector *array) {
 
     deleteUser(array, id);
 
-    printf("Usuario Removido!");
+    awaitResponse();
 }
 
 void makeTransference(UserVector* array) {
@@ -69,14 +69,14 @@ void printVector(UserVector* array) {
       printf("O Banco de dados está vazio \n");
       return;
     }
-  
+
     printf("Lista de pessoas no banco de dados: \n");
     for (int index = 0; index < array->size; index++) {
         printf(
-            "ID: %d, Nome: %s, Idade: %d, Saldo Atual: %.2f\n", 
+            "ID: %d, Nome: %s, Idade: %d, Saldo Atual: %.2f\n",
             array->users[index].id,
-            array->users[index].name, 
-            array->users[index].age, 
+            array->users[index].name,
+            array->users[index].age,
             array->users[index].balance
         );
     }
@@ -91,4 +91,3 @@ void exportUsersToTxt(UserVector *array) {
     printf("Exportando usuários...");
     exportUsers(file, array);
 }
-
