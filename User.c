@@ -3,6 +3,9 @@
 #include<string.h>
 #include "User.h"
 
+
+
+// using this variable as a bool
 //
 // Memory functions
 //
@@ -69,6 +72,8 @@ void insertUser(UserVector* array, int id, int age, char* name, float balance) {
 
 void deleteUser(UserVector* array, int userId) {
     int found = contains(array, userId);
+
+
     if (found == -1) {
         printf("Usuario nao encontrado, impossivel excluir.");
         getchar();
