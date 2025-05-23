@@ -16,7 +16,7 @@ enum Options {
 
 int main() {
     UserVector Users;
-    initVector(&Users);
+    Users = importUsers();
 
     while (1) {
         printf("Insira uma opção: \n");
@@ -38,6 +38,7 @@ int main() {
 
             case ADD_NEW_USER:
                 addNewUser(&Users);
+                awaitResponse();
                 break;
 
             case TRANSFERENCE:

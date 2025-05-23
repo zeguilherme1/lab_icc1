@@ -12,4 +12,6 @@ void printVector(UserVector* array);
 
 void exportUsersToTxt(UserVector* array);
 
+UserVector importUsers();
+
 #endif

@@ -3,22 +3,20 @@
 #include<string.h>
 #include "User.h"
 
-
-
 // using this variable as a bool
 //
 // Memory functions
 //
 
 void initVector(UserVector* array) {
-    array->users    = malloc(10 * sizeof(User));
+    array->users = malloc(10 * sizeof(User));
 
     if (array->users == NULL) {
         printf("MALLOC ERROR\n");
         exit(1);
     }
 
-    array->size     = 0;
+    array->size = 0;
     array->capacity = 10;
 }
 
@@ -35,7 +33,7 @@ void resizeVector(UserVector* array) {
         exit(1);
     }
 
-    array->users    = newUsers;
+    array->users = newUsers;
     array->capacity = newCapacity;
 }
 
@@ -72,8 +70,6 @@ void insertUser(UserVector* array, int id, int age, char* name, float balance) {
 
 void deleteUser(UserVector* array, int userId) {
     int found = contains(array, userId);
-
-
     if (found == -1) {
         printf("Usuario nao encontrado, impossivel excluir.");
         getchar();
@@ -133,16 +129,17 @@ void transferBalance(UserVector* array, int id1, int id2, float value) {
 }
 
 void exportUsers(const char* file, UserVector* array) {
-        FILE* fp = fopen(file, "w+");
-        if(!fp){
-                perror("Error trying to write in file");
-                getchar();
-                return;
-        }
-        fprintf(fp, "id|idade|nome|saldo\n");
-        for(int i = 0; i < array->size; i++){
-                User u = array->users[i];
-                fprintf(fp, "%d|%d|%s|%.2f\n", u.id, u.age, u.name, u.balance);
-        }
-        fclose(fp);
+    FILE* fp = fopen(file, "w+");
+    if(!fp) {
+        perror("Error trying to write in file");
+        getchar();
+        return;
+    }
+
+    for(int i = 0; i < array->size; i++){
+        User u = array->users[i];
+        fprintf(fp, "%d|%d|%s|%.2f\n", u.id, u.age, u.name, u.balance);
+    }
+
+    fclose(fp);
 }

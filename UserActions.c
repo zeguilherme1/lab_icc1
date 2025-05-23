@@ -1,17 +1,20 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include "Utils.h"
 #include "User.h"
 #include "UserActions.h"
+#define TXT_PATH "userDB.txt"
 
 void addNewUser(UserVector* array) {
-    int numberOfUsers;
+    unsigned int numberOfUsers;
     printf("Insira quantos usuários gostaria de inserir: ");
-    scanf("%d", &numberOfUsers);
+    scanf("%u", &numberOfUsers);
 
     char name[100];
     int age;
     float balance;
+
     for (int i = 0; i < numberOfUsers; i++) {
         memset(name, '\0', sizeof(name));
 
@@ -32,7 +35,6 @@ void addNewUser(UserVector* array) {
 
         if (balance <= 0) {
             printf("Nao é possivel inserir um saldo negativo!\n");
-            awaitResponse();
             return;
         }
 
@@ -41,13 +43,11 @@ void addNewUser(UserVector* array) {
 }
 
 void removeUser(UserVector *array) {
-    int id;
+    unsigned int id;
     printf("Insira o ID que deseja remover: ");
-    scanf("%d", &id);
+    scanf("%u", &id);
 
     deleteUser(array, id);
-
-    awaitResponse();
 }
 
 void makeTransference(UserVector* array) {
@@ -83,11 +83,55 @@ void printVector(UserVector* array) {
 }
 
 void exportUsersToTxt(UserVector *array) {
-    char file[100];
-    printf("Digite o nome do arquivo (sem .txt): ");
-    scanf("%s", file);
-    strcat(file, ".txt");
-
     printf("Exportando usuários...");
-    exportUsers(file, array);
+    exportUsers(TXT_PATH, array);
+}
+
+UserVector importUsers() {
+    FILE* fp = fopen(TXT_PATH, "r");
+
+    UserVector newUsers;
+    initVector(&newUsers);
+
+    if (!fp) {
+        perror("Error trying to open file");
+
+        fp = fopen(TXT_PATH, "w+");
+        if (!fp) {
+            perror("Error trying to create file");
+            clearBuffer();
+            exit(0);
+        }
+
+        fprintf(fp, "id|idade|nome|saldo\n");
+    }
+    else {
+        char line[1000];
+        memset(line, '\0', sizeof(line));
+
+        fgets(line, sizeof(line), fp);
+        while (fgets(line, sizeof(line), fp) != NULL) {
+            char strCopy[1000];
+            strcpy(strCopy, line);
+
+            char *attr = strtok(strCopy, "|");
+            int id = atoi(attr);
+
+            attr = strtok(NULL, "|");
+            int age = atoi(attr);
+
+            attr = strtok(NULL, "|");
+            char *name = attr;
+
+            attr = strtok(NULL, "|");
+            attr[strcspn(attr, "\n")] = '\0';
+            float balance = atof(attr);
+            
+            insertUser(&newUsers, id, age, name, balance);
+        }
+
+        fclose(fp);
+    }
+
+    return newUsers;
 }
